@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: llamacpp-svc
+  namespace: codegen-poc
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8001
+  selector:
+    app: llamacpp-serve
+  type: ClusterIP

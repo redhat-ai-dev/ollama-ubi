@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llamacpp-serve
+  namespace: codegen-poc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llamacpp-serve
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: llamacpp-serve
+    spec:
+      containers:
+      - image: quay.io/ai-lab/llamacpp_python_cuda:latest
+        imagePullPolicy: Always
+        name: llamacpp-container
+        ports:
+        - containerPort: 8001
+          protocol: TCP
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
+          requests:
+            nvidia.com/gpu: "1"
+            cpu: "2m" # This process uses very little CPU when idle and about 800m when busy
+            memory: "5Gi" # The granite-7b-lab model uses almost 5GB of RAM
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /locallm/models:ro
+          name: llamacpp-storage
+        env: 
+        - name: MODEL_PATH
+          value: "./model.file"
+          #value: "models/granite-7b-lab-Q4_K_M.gguf"
+        - name: MODEL_CHAT_FORMAT
+          value: "openchat"
+
+      - image: quay.io/ai-lab/ai-lab/granite-7b-lab:latest
+        imagePullPolicy: Always
+        name: granite-container
+        resources:
+          requests:
+            cpu: "2m" # This process uses very little CPU when idle and about 800m when busy
+            memory: "5Mi" # The granite-7b-lab model uses almost 5GB of RAM
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /locallm/models:ro
+          name: llamacpp-storage
+
+      restartPolicy: Always
+      volumes:
+      - name: llamacpp-storage
+        persistentVolumeClaim:
+          claimName: llamacpp-storage
