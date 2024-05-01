@@ -12,8 +12,6 @@ fi
 if [ -n "${GOLANG_VERSION}" ]; then
     if [ "${MACHINE}" = "x86_64" ]; then
         GO_ARCH="amd64"
-#    elif [ "${MACHINE}" = "aarch64" ]; then
-#        GO_ARCH="aarch64"
     else
         GO_ARCH="arm64"
     fi

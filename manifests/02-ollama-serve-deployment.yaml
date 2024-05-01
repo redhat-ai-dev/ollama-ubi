@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ollama-serve
-  namespace: ollama
+  namespace: codegen-poc
 spec:
   replicas: 1
   selector:
@@ -16,12 +16,16 @@ spec:
         app: ollama-serve
     spec:
       containers:
-      - image: quay.io/wcaban/ollama:latest
+      - image: ollama/ollama:latest
         imagePullPolicy: Always
         name: container
         ports:
         - containerPort: 11434
           protocol: TCP
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "ollama pull mistral:latest"]
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -32,6 +36,9 @@ spec:
         volumeMounts:
         - mountPath: /.ollama
           name: ollama-storage
+        env: # add the new env variable here
+        - name: OLLAMA_KEEP_ALIVE
+          value: "12h"
       restartPolicy: Always
       volumes:
       - name: ollama-storage
