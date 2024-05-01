@@ -22,6 +22,10 @@ spec:
         ports:
         - containerPort: 11434
           protocol: TCP
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "ollama pull mistral:latest"]
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -32,6 +36,9 @@ spec:
         volumeMounts:
         - mountPath: /.ollama
           name: ollama-storage
+        env: # add the new env variable here
+        - name: OLLAMA_KEEP_ALIVE
+          value: "12h"
       restartPolicy: Always
       volumes:
       - name: ollama-storage
