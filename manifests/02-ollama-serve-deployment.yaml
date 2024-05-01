@@ -31,6 +31,8 @@ spec:
             nvidia.com/gpu: "1"
           requests:
             nvidia.com/gpu: "1"
+            cpu: "2m" # This process uses very little CPU when idle and about 800m when busy
+            memory: "5Gi" # The mistral model uses almost 5GB of RAM
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
