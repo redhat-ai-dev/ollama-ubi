@@ -16,7 +16,7 @@ spec:
         app: llamacpp-serve
     spec:
       containers:
-      - image: quay.io/ai-lab/llamacpp_python_cuda:latest
+      - image: quay.io/ai-lab/llamacpp-python-cuda
         imagePullPolicy: Always
         name: llamacpp-container
         ports:
@@ -34,14 +34,17 @@ spec:
         volumeMounts:
         - mountPath: /locallm/models:ro
           name: llamacpp-storage
+        - mountPath: /locallm/config:ro
+          name: json-configmap-volume
         env: 
-        - name: MODEL_PATH
-          value: "./model.file"
+        #- name: MODEL_PATH
+        #  value: "./model.file"
           #value: "models/granite-7b-lab-Q4_K_M.gguf"
+        - name: CONFIG_PATH
+          value: /locallm/config/models_config.json
         - name: MODEL_CHAT_FORMAT
           value: "openchat"
-
-      - image: quay.io/ai-lab/ai-lab/granite-7b-lab:latest
+      - image: quay.io/ai-lab/granite-7b-lab
         imagePullPolicy: Always
         name: granite-container
         resources:
@@ -53,9 +56,11 @@ spec:
         volumeMounts:
         - mountPath: /locallm/models:ro
           name: llamacpp-storage
-
       restartPolicy: Always
       volumes:
+      - name: json-configmap-volume
+        configMap:
+          name: json-configmap
       - name: llamacpp-storage
         persistentVolumeClaim:
           claimName: llamacpp-storage
