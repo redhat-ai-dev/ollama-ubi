@@ -34,14 +34,14 @@ spec:
         volumeMounts:
         - mountPath: /locallm/models:ro
           name: llamacpp-storage
-        - mountPath: /locallm/config:ro
+        - mountPath: /config:ro
           name: json-configmap-volume
         env: 
         #- name: MODEL_PATH
         #  value: "./model.file"
           #value: "models/granite-7b-lab-Q4_K_M.gguf"
         - name: CONFIG_PATH
-          value: /locallm/config/models_config.json
+          value: /config/models_config.json
         - name: MODEL_CHAT_FORMAT
           value: "openchat"
       - image: quay.io/ai-lab/granite-7b-lab
@@ -56,6 +56,8 @@ spec:
         volumeMounts:
         - mountPath: /locallm/models:ro
           name: llamacpp-storage
+        - mountPath: /config:ro
+          name: json-configmap-volume
       restartPolicy: Always
       volumes:
       - name: json-configmap-volume
