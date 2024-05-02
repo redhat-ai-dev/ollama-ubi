@@ -4,7 +4,7 @@ metadata:
   name: llamacpp-route
   namespace: codegen-poc
 spec:
-  host: ollama.apps.collective.aws.red-chesterfield.com
+  host: llamacpp.apps.collective.aws.red-chesterfield.com
   port:
     targetPort: 8001
   to:
