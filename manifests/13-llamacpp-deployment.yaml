@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: llamacpp-serve
+  namespace: codegen-poc
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: llamacpp-serve
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: llamacpp-serve
+    spec:
+      containers:
+      - image: quay.io/ai-lab/llamacpp-python-cuda
+        imagePullPolicy: Always
+        name: llamacpp-container
+        ports:
+        - containerPort: 8001
+          protocol: TCP
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
+          requests:
+            nvidia.com/gpu: "1"
+            cpu: "2m" # This process uses very little CPU when idle
+            memory: "5Gi" # The granite-7b-lab model uses almost 5GB of RAM
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /models
+          name: llamacpp-storage
+        - mountPath: /config
+          name: json-configmap-volume
+        env: 
+        - name: CONFIG_PATH
+          value: /config/models_config.json
+        #- name: MODEL_PATH
+        #  value: "/models/granite-7b-lab-Q4_K_M.gguf"
+        - name: MODEL_CHAT_FORMAT
+          value: "openchat"
+      initContainers:
+        - command:
+            - curl
+            - '-L'
+            - >-
+              https://huggingface.co/instructlab/granite-7b-lab-GGUF/resolve/main/granite-7b-lab-Q4_K_M.gguf
+            - '--output'
+            - /models/granite-7b-lab-Q4_K_M.gguf
+          image: registry.access.redhat.com/ubi9/ubi-init
+          imagePullPolicy: Always
+          name: init-llamacpp
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /models
+            name: llamacpp-storage
+          - mountPath: /config
+            name: json-configmap-volume
+      restartPolicy: Always
+      volumes:
+      - name: json-configmap-volume
+        configMap:
+          name: json-configmap
+      - name: llamacpp-storage
+        persistentVolumeClaim:
+          claimName: llamacpp-storage

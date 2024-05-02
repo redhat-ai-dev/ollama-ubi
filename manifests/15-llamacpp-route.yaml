@@ -1,0 +1,14 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: llamacpp-route
+  namespace: codegen-poc
+spec:
+  host: llamacpp.apps.collective.aws.red-chesterfield.com
+  port:
+    targetPort: 8001
+  to:
+    kind: Service
+    name: llamacpp-svc
+    weight: 100
+  wildcardPolicy: None

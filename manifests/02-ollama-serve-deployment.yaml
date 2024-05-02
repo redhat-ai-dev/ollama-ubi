@@ -25,7 +25,7 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "ollama pull mistral:latest"]
+              command: ["/bin/sh", "-c", "ollama pull mistral:latest; ollama pull wizardlm2:7b; ollama list"]
         resources:
           limits:
             nvidia.com/gpu: "1"
