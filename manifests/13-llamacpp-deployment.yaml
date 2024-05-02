@@ -16,12 +16,32 @@ spec:
         app: llamacpp-serve
     spec:
       containers:
+      - image: quay.io/ai-lab/granite-7b-lab
+        imagePullPolicy: Always
+        name: granite-container
+        #lifecycle:
+        #  postStart:
+        #    exec:
+        #      command: ["/bin/sh", "-c", "cp /model/model.file models/granite-7b-lab-Q4_K_M.gguf"]
+        resources:
+          requests:
+            cpu: "2m" 
+            memory: "5Mi" 
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /models
+          name: llamacpp-storage
       - image: quay.io/ai-lab/llamacpp-python-cuda
         imagePullPolicy: Always
         name: llamacpp-container
         ports:
         - containerPort: 8001
           protocol: TCP
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "curl -sLO https://huggingface.co/instructlab/granite-7b-lab-GGUF/resolve/main/granite-7b-lab-Q4_K_M.gguf"]
         resources:
           limits:
             nvidia.com/gpu: "1"
@@ -32,32 +52,17 @@ spec:
         terminationMessagePath: /dev/termination-log
         terminationMessagePolicy: File
         volumeMounts:
-        - mountPath: /locallm/models:ro
+        - mountPath: /models
           name: llamacpp-storage
-        - mountPath: /config:ro
+        - mountPath: /config
           name: json-configmap-volume
         env: 
-        #- name: MODEL_PATH
-        #  value: "./model.file"
-          #value: "models/granite-7b-lab-Q4_K_M.gguf"
         - name: CONFIG_PATH
           value: /config/models_config.json
+        #- name: MODEL_PATH
+        #  value: "/models/granite-7b-lab-Q4_K_M.gguf"
         - name: MODEL_CHAT_FORMAT
           value: "openchat"
-      - image: quay.io/ai-lab/granite-7b-lab
-        imagePullPolicy: Always
-        name: granite-container
-        resources:
-          requests:
-            cpu: "2m" # This process uses very little CPU when idle and about 800m when busy
-            memory: "5Mi" # The granite-7b-lab model uses almost 5GB of RAM
-        terminationMessagePath: /dev/termination-log
-        terminationMessagePolicy: File
-        volumeMounts:
-        - mountPath: /locallm/models:ro
-          name: llamacpp-storage
-        - mountPath: /config:ro
-          name: json-configmap-volume
       restartPolicy: Always
       volumes:
       - name: json-configmap-volume
