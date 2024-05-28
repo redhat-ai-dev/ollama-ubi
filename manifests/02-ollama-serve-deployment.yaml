@@ -16,7 +16,7 @@ spec:
         app: ollama-serve
     spec:
       containers:
-      - image: ollama/ollama:latest
+      - image: ollama/ollama:0.1.39
         imagePullPolicy: Always
         name: container
         ports:
@@ -25,7 +25,7 @@ spec:
         lifecycle:
           postStart:
             exec:
-              command: ["/bin/sh", "-c", "ollama pull mistral:latest; ollama pull wizardlm2:7b; ollama list"]
+              command: ["/bin/sh", "-c", "ollama pull mistral:latest; ollama pull granite-code:20b; ollama list"]
         resources:
           limits:
             nvidia.com/gpu: "1"
