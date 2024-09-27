@@ -1,6 +1,7 @@
 #!/bin/bash
-
+CONTAINER_ENGINE="${VARIABLE:-podman}"
+IMAGE_REPO="${VARIABLE:-quay.io/redhat-ai-dev/ollama-ubi}"
 OLLAMA_VERSION=$(cat VERSION)
 
-podman push quay.io/afred/ollama:latest
-podman push quay.io/afred/ollama:${OLLAMA_VERSION}
+$CONTAINER_ENGINE push $IMAGE_REPO:latest
+$CONTAINER_ENGINE push $IMAGE_REPO:${OLLAMA_VERSION}
