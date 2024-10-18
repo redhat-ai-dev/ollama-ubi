@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ollama-serve
-  namespace: codegen-poc
 spec:
   replicas: 1
   selector:
@@ -16,7 +15,7 @@ spec:
         app: ollama-serve
     spec:
       containers:
-      - image: ollama/ollama:0.1.39
+      - image: quay.io/redhat-ai-dev/ollama-ubi:v0.3.12
         imagePullPolicy: Always
         name: container
         ports:
@@ -41,6 +40,8 @@ spec:
         env: # add the new env variable here
         - name: OLLAMA_KEEP_ALIVE
           value: "12h"
+        - name: OLLAMA_ORIGINS
+          value: "*"
       restartPolicy: Always
       volumes:
       - name: ollama-storage
