@@ -12,11 +12,11 @@
 #   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
-name: CI
+name: PR
 
 on:
-  push:
-    branches: [main]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   build:
@@ -39,12 +39,6 @@ jobs:
           swap-storage: true
       - name: Check out ollama-ubi
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      - name: Login to Quay
-        uses: docker/login-action@343f7c4344506bcbf9b4de18042ae17996df046d # v3.0.0
-        with:
-          registry: quay.io
-          username: ${{ secrets.QUAY_USERNAME }}
-          password: ${{ secrets.QUAY_PASSWORD }}
       - name: Build the ollama-ubi image
         run: bash build.sh
         env:
