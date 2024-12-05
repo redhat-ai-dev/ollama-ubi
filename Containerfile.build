@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:12.3.2-devel-ubi9
+FROM docker.io/nvidia/cuda:12.4.1-devel-ubi9
 
 ARG VERSION
 ARG GOLANG_VERSION=1.22.1
@@ -21,13 +21,14 @@ RUN go generate ./... \
     && go build . \
     && ls -l /ollama
 
-FROM docker.io/nvidia/cuda:12.6.2-runtime-ubi9
+FROM docker.io/nvidia/cuda:12.4.1-runtime-ubi9
 
 RUN dnf -y update \
     && dnf install -y --nodocs pciutils \
     && dnf clean all && rm -rf /var/cache/*
 
 COPY --from=0 /ollama/ollama /usr/local/bin/ollama
+COPY --from=0 /ollama/dist/linux-amd64/lib/ollama /usr/lib/ollama
 
 LABEL maintainer=afred@redhat.com \
       io.k8s.display-name="Ollama AI" \

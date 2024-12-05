@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:12.6.2-devel-ubi9
+FROM docker.io/nvidia/cuda:12.4.1-devel-ubi9
 
 LABEL maintainer=afred@redhat.com \
       io.k8s.display-name="Ollama AI" \
