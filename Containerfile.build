@@ -1,4 +1,4 @@
-FROM docker.io/nvidia/cuda:12.4.1-devel-ubi9
+FROM docker.io/nvidia/cuda:12.6.3-devel-ubi9
 
 ARG VERSION
 ARG GOLANG_VERSION=1.22.1
@@ -17,11 +17,10 @@ RUN dnf clean all && rm -rf /var/cache/* \
 #USER root
 WORKDIR /ollama
 
-RUN go generate ./... \
-    && go build . \
+RUN go build . \
     && ls -l /ollama
 
-FROM docker.io/nvidia/cuda:12.4.1-runtime-ubi9
+FROM docker.io/nvidia/cuda:12.6.3-runtime-ubi9
 
 RUN dnf -y update \
     && dnf install -y --nodocs pciutils \
