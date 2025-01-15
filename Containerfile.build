@@ -27,7 +27,7 @@ RUN dnf -y update \
     && dnf clean all && rm -rf /var/cache/*
 
 COPY --from=0 /ollama/ollama /usr/local/bin/ollama
-COPY --from=0 /ollama/dist/linux-amd64/lib/ollama /usr/lib/ollama
+#COPY --from=0 /ollama/dist/linux-amd64/lib/ollama /usr/lib/ollama
 
 LABEL maintainer=afred@redhat.com \
       io.k8s.display-name="Ollama AI" \
