@@ -11,7 +11,7 @@ USER root
 
 WORKDIR /ollama
 
-ENV OLLAMA_VERSION=0.9.1
+ENV OLLAMA_VERSION=0.12.8
 
 RUN chmod 770 /ollama && \
     chgrp root /ollama && \
