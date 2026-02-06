@@ -2,7 +2,7 @@
 CONTAINER_ENGINE="${VARIABLE:-podman}"
 IMAGE_REPO="${VARIABLE:-quay.io/redhat-ai-dev/ollama-ubi}"
 
-OLLAMA_VERSION="v0.12.8"
+OLLAMA_VERSION="v0.15.5"
 
 echo ${OLLAMA_VERSION} > VERSION
 
