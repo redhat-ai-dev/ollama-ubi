@@ -1,5 +1,8 @@
 # ollama UBI-based image for OpenShift
 
+> [!WARNING]
+> This repository has been retired and will no longer be maintained. It has been moved to [redhat-developer/rhdh-ai-developer-images](https://github.com/redhat-developer/rhdh-ai-developer-images).
+
 This repo contains the Containerfile and manifest for an [UBI-based](https://catalog.redhat.com/software/base-images) image of [ollama.ai](https://ollama.ai) and the corresponding Kubernetes manifests to run it
 
 The images are published at `quay.io/redhat-ai-dev/ollama-ubi:v0.3.12`. See the full list of [image tags](https://quay.io/repository/redhat-ai-dev/ollama-ubi?tab=tags)
